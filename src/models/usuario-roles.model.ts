@@ -6,13 +6,13 @@ import {Entity, model, property} from '@loopback/repository';
       fk_UserRL_idUser: {
         name: 'fk_UserRL_idUser',
         entity: 'Usuarios',
-        entityKey: 'id',
+        entityKey: '_id',
         foreignKey: 'usuariosId',
       },
       fk_UserRL_idRoles: {
         name: 'fk_UserRL_idRoles',
         entity: 'Roles',
-        entityKey: 'id',
+        entityKey: '_id',
         foreignKey: 'rolesId',
       },
     }
@@ -20,21 +20,21 @@ import {Entity, model, property} from '@loopback/repository';
 })
 export class UsuarioRoles extends Entity {
   @property({
-    type: 'number',
+    type: 'string',
     id: true,
     generated: true,
   })
-  id?: number;
+  _id?: string;
 
   @property({
-    type: 'number',
+    type: 'string',
   })
-  rolesId?: number;
+  rolesId?: string;
 
   @property({
-    type: 'number',
+    type: 'string',
   })
-  usuariosId?: number;
+  usuariosId?: string;
 
   constructor(data?: Partial<UsuarioRoles>) {
     super(data);

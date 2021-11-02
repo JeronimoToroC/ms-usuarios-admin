@@ -4,18 +4,12 @@ import {
   Filter,
   FilterExcludingWhere,
   repository,
-  Where,
+  Where
 } from '@loopback/repository';
 import {
-  post,
-  param,
-  get,
-  getModelSchemaRef,
-  patch,
-  put,
-  del,
-  requestBody,
-  response,
+  del, get,
+  getModelSchemaRef, param, patch, post, put, requestBody,
+  response
 } from '@loopback/rest';
 import {UsuarioRoles} from '../models';
 import {UsuarioRolesRepository} from '../repositories';
@@ -23,8 +17,8 @@ import {UsuarioRolesRepository} from '../repositories';
 export class UsuarioRolesController {
   constructor(
     @repository(UsuarioRolesRepository)
-    public usuarioRolesRepository : UsuarioRolesRepository,
-  ) {}
+    public usuarioRolesRepository: UsuarioRolesRepository,
+  ) { }
 
   @post('/usuario-roles')
   @response(200, {
@@ -37,12 +31,12 @@ export class UsuarioRolesController {
         'application/json': {
           schema: getModelSchemaRef(UsuarioRoles, {
             title: 'NewUsuarioRoles',
-            exclude: ['id'],
+            exclude: ['_id'],
           }),
         },
       },
     })
-    usuarioRoles: Omit<UsuarioRoles, 'id'>,
+    usuarioRoles: Omit<UsuarioRoles, '_id'>,
   ): Promise<UsuarioRoles> {
     return this.usuarioRolesRepository.create(usuarioRoles);
   }
@@ -95,7 +89,7 @@ export class UsuarioRolesController {
     return this.usuarioRolesRepository.updateAll(usuarioRoles, where);
   }
 
-  @get('/usuario-roles/{id}')
+  @get('/usuario-roles/{_id}')
   @response(200, {
     description: 'UsuarioRoles model instance',
     content: {
@@ -105,18 +99,18 @@ export class UsuarioRolesController {
     },
   })
   async findById(
-    @param.path.number('id') id: number,
+    @param.path.string('_id') _id: string,
     @param.filter(UsuarioRoles, {exclude: 'where'}) filter?: FilterExcludingWhere<UsuarioRoles>
   ): Promise<UsuarioRoles> {
-    return this.usuarioRolesRepository.findById(id, filter);
+    return this.usuarioRolesRepository.findById(_id, filter);
   }
 
-  @patch('/usuario-roles/{id}')
+  @patch('/usuario-roles/{_id}')
   @response(204, {
     description: 'UsuarioRoles PATCH success',
   })
   async updateById(
-    @param.path.number('id') id: number,
+    @param.path.string('_id') _id: string,
     @requestBody({
       content: {
         'application/json': {
@@ -126,25 +120,25 @@ export class UsuarioRolesController {
     })
     usuarioRoles: UsuarioRoles,
   ): Promise<void> {
-    await this.usuarioRolesRepository.updateById(id, usuarioRoles);
+    await this.usuarioRolesRepository.updateById(_id, usuarioRoles);
   }
 
-  @put('/usuario-roles/{id}')
+  @put('/usuario-roles/{_id}')
   @response(204, {
     description: 'UsuarioRoles PUT success',
   })
   async replaceById(
-    @param.path.number('id') id: number,
+    @param.path.string('_id') _id: string,
     @requestBody() usuarioRoles: UsuarioRoles,
   ): Promise<void> {
-    await this.usuarioRolesRepository.replaceById(id, usuarioRoles);
+    await this.usuarioRolesRepository.replaceById(_id, usuarioRoles);
   }
 
-  @del('/usuario-roles/{id}')
+  @del('/usuario-roles/{_id}')
   @response(204, {
     description: 'UsuarioRoles DELETE success',
   })
-  async deleteById(@param.path.number('id') id: number): Promise<void> {
-    await this.usuarioRolesRepository.deleteById(id);
+  async deleteById(@param.path.string('_id') _id: string): Promise<void> {
+    await this.usuarioRolesRepository.deleteById(_id);
   }
 }
