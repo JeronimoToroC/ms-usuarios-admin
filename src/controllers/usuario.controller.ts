@@ -1,3 +1,4 @@
+import {service} from '@loopback/core';
 import {
   Count,
   CountSchema,
@@ -11,13 +12,16 @@ import {
   getModelSchemaRef, param, patch, post, put, requestBody,
   response
 } from '@loopback/rest';
-import {Usuarios} from '../models';
+import {Credenciales, CredencialesCambioClave, CredencialesRecuperarClave, Usuarios} from '../models';
 import {UsuariosRepository} from '../repositories';
+import {AdminDePasswordsService} from '../services';
 
 export class UsuarioController {
   constructor(
     @repository(UsuariosRepository)
     public usuariosRepository: UsuariosRepository,
+    @service(AdminDePasswordsService)
+    public passwordService: AdminDePasswordsService
   ) { }
 
   @post('/usuarios')
@@ -38,6 +42,10 @@ export class UsuarioController {
     })
     usuarios: Omit<Usuarios, '_id'>,
   ): Promise<Usuarios> {
+    const password = this.passwordService.generateRandomPassword()
+    //Aquí se hace la notificación de la clave al usuario (password )
+    const cryptingPassword = this.passwordService.cryptngText(password)
+    usuarios.password = cryptingPassword
     return this.usuariosRepository.create(usuarios);
   }
 
@@ -141,4 +149,74 @@ export class UsuarioController {
   async deleteById(@param.path.string('_id') _id: string): Promise<void> {
     await this.usuariosRepository.deleteById(_id);
   }
+
+
+  @post("/identificar-usuario", {
+    responses: {
+      "200": {
+        description: "Identificación de usuario"
+      }
+    }
+  })
+  async identificar(
+    @requestBody() credenciales: Credenciales
+  ): Promise<object | null> {
+    const usuario = await this.usuariosRepository.findOne({
+      where: {
+        email: credenciales.usuario,
+        password: credenciales.password
+      }
+    });
+    return usuario;
+  }
+
+  @post("/recuperar-contraseña", {
+    responses: {
+      "200": {
+        description: "Recuperar contraseña de usuarios "
+      }
+    }
+  })
+  async passwordRecover(
+    @requestBody() credenciales: CredencialesRecuperarClave
+  ): Promise<boolean> {
+    const usuario = await this.usuariosRepository.findOne({
+      where: {
+        email: credenciales.email
+      }
+    });
+    if (usuario) {
+      const password = this.passwordService.generateRandomPassword()
+      const cryptedPassword = this.passwordService.cryptngText(password)
+      usuario.password = cryptedPassword
+      await this.usuariosRepository.updateById(usuario._id, usuario)
+      return true
+    }
+    return false;
+  }
+
+  @post("/cambiar-contraseña", {
+    responses: {
+      "200": {
+        description: "Cambiar contraseña de usuarios "
+      }
+    }
+  })
+  async passwordChanger(
+    @requestBody() data: CredencialesCambioClave
+  ): Promise<boolean> {
+    const usuario = await this.usuariosRepository.findById(data.id);
+    if (usuario) {
+      if (usuario.password === data.currentPassword) {
+        usuario.password = data.newPassword
+        await this.usuariosRepository.updateById(data.id, usuario)
+        return true
+      } else {
+        return false
+      }
+    }
+    return false;
+  }
 }
+
+
