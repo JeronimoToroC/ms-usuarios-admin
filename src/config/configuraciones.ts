@@ -12,4 +12,8 @@ export namespace Configuraciones {
   export const arg_mensaje_sms_notificaciones = "mensaje";
   export const arg_hash_notificaciones = "mensaje";
   export const mensaje_recuperacion_clave = "Su nueva clave es: ";
+  export const url_crear_token="http://localhost:5001/crear-token";
+  export const arg_nombre_token="nombre";
+  export const arg_id_persona_token="id";
+  export const arg_id_rol_token="id_rol";
 }

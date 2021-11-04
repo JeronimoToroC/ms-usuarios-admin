@@ -15,7 +15,7 @@ import {
 import {Configuraciones} from '../config/configuraciones';
 import {Credenciales, CredencialesCambioClave, CredencialesRecuperarClave, NotificacionCorreo, NotificacionesSms, Usuarios} from '../models';
 import {UsuariosRepository} from '../repositories';
-import {AdminDePasswordsService, NotificacionesService} from '../services';
+import {AdminDePasswordsService, NotificacionesService, SesionUsuariosService} from '../services';
 
 export class UsuarioController {
   constructor(
@@ -25,7 +25,8 @@ export class UsuarioController {
     public passwordService: AdminDePasswordsService,
     @service(NotificacionesService)
     public servicioNotificaciones: NotificacionesService
-
+    @service(SesionUsuariosService)
+    private servicioSesionUsuarios: SesionUsuariosService
   ) { }
 
   @post('/usuarios')
@@ -169,14 +170,17 @@ export class UsuarioController {
   })
   async identificar(
     @requestBody() credenciales: Credenciales
-  ): Promise<object | null> {
-    const usuario = await this.usuariosRepository.findOne({
-      where: {
-        email: credenciales.usuario,
-        password: credenciales.password
-      }
-    });
-    return usuario;
+  ): Promise<Object> {
+    const usuario = await this.servicioSesionUsuarios.ValidarCredenciales(credenciales);
+    let token = "";
+    if (usuario) {
+      usuario.clave = "";
+      token = this.servicioSesionUsuarios.CrearToken(usuario);
+    }
+    return {
+      tk: token,
+      usuario: usuario
+    };
   }
 
   @post("/recuperar-contraseña", {
