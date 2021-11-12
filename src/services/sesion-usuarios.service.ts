@@ -15,8 +15,8 @@ export class SesionUsuariosService {
   /*
    * Add service methods here
    */
-  async ValidarCredenciales(credenciales:Credenciales):Usuario{
-    let usuario = await this.usuariosRepository.findOne({
+  async ValidarCredenciales(credenciales:Credenciales){
+    let usuario = await this.usuarioRepository.findOne({
       where: {
         email: credenciales.usuario,
         password: credenciales.password
@@ -29,8 +29,8 @@ export class SesionUsuariosService {
     let url_crear_token = `${config.url_crear_token}?${config.arg_nombre_token}=${usuario.name}&${config.arg_id_persona_token}=${usuario._id}`
     let token = "";
     await fetch(url_crear_token)
-    .then((res: any) =>{
-      token = res.text();
+    .then(async(res: any) =>{
+      token = await res.text();
       console.log(token);
     })
     return token;
