@@ -24,7 +24,7 @@ export class UsuarioController {
     @service(AdminDePasswordsService)
     public passwordService: AdminDePasswordsService,
     @service(NotificacionesService)
-    public servicioNotificaciones: NotificacionesService
+    public servicioNotificaciones: NotificacionesService,
     @service(SesionUsuariosService)
     private servicioSesionUsuarios: SesionUsuariosService
   ) { }
@@ -171,11 +171,11 @@ export class UsuarioController {
   async identificar(
     @requestBody() credenciales: Credenciales
   ): Promise<Object> {
-    const usuario = await this.servicioSesionUsuarios.ValidarCredenciales(credenciales);
+    let usuario = await this.servicioSesionUsuarios.ValidarCredenciales(credenciales);
     let token = "";
     if (usuario) {
-      usuario.clave = "";
-      token = this.servicioSesionUsuarios.CrearToken(usuario);
+      usuario.password = "";
+      token = await this.servicioSesionUsuarios.CrearToken(usuario);
     }
     return {
       tk: token,
