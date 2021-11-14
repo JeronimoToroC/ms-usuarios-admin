@@ -1,8 +1,7 @@
-import {Getter, inject} from '@loopback/core';
-import {DefaultCrudRepository, HasManyThroughRepositoryFactory, repository} from '@loopback/repository';
+import {inject, Getter} from '@loopback/core';
+import {DefaultCrudRepository, repository, HasManyRepositoryFactory} from '@loopback/repository';
 import {MongodbDataSource} from '../datasources';
-import {Roles, RolesRelations, UsuarioRoles, Usuarios} from '../models';
-import {UsuarioRolesRepository} from './usuario-roles.repository';
+import {Roles, RolesRelations, Usuarios} from '../models';
 import {UsuariosRepository} from './usuarios.repository';
 
 export class RolesRepository extends DefaultCrudRepository<
@@ -11,16 +10,13 @@ export class RolesRepository extends DefaultCrudRepository<
   RolesRelations
 > {
 
-  public readonly usuarioRoles: HasManyThroughRepositoryFactory<Usuarios, typeof Usuarios.prototype._id,
-    UsuarioRoles,
-    typeof Roles.prototype._id
-  >;
+  public readonly usuarios: HasManyRepositoryFactory<Usuarios, typeof Roles.prototype._id>;
 
   constructor(
-    @inject('datasources.mongodb') dataSource: MongodbDataSource, @repository.getter('UsuarioRolesRepository') protected usuarioRolesRepositoryGetter: Getter<UsuarioRolesRepository>, @repository.getter('UsuariosRepository') protected usuariosRepositoryGetter: Getter<UsuariosRepository>,
+    @inject('datasources.mongodb') dataSource: MongodbDataSource, @repository.getter('UsuariosRepository') protected usuariosRepositoryGetter: Getter<UsuariosRepository>,
   ) {
     super(Roles, dataSource);
-    this.usuarioRoles = this.createHasManyThroughRepositoryFactoryFor('usuarioRoles', usuariosRepositoryGetter, usuarioRolesRepositoryGetter,);
-    this.registerInclusionResolver('usuarioRoles', this.usuarioRoles.inclusionResolver);
+    this.usuarios = this.createHasManyRepositoryFactoryFor('usuarios', usuariosRepositoryGetter,);
+    this.registerInclusionResolver('usuarios', this.usuarios.inclusionResolver);
   }
 }

@@ -171,7 +171,7 @@ export class UsuarioController {
   async identificar(
     @requestBody() credenciales: Credenciales
   ): Promise<Object> {
-    let usuario = await this.servicioSesionUsuarios.ValidarCredenciales(credenciales);
+    const usuario = await this.servicioSesionUsuarios.ValidarCredenciales(credenciales);
     let token = "";
     if (usuario) {
       usuario.password = "";

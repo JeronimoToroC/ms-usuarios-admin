@@ -1,5 +1,4 @@
-import {Entity, hasMany, model, property} from '@loopback/repository';
-import {UsuarioRoles} from './usuario-roles.model';
+import {Entity, model, property, hasMany} from '@loopback/repository';
 import {Usuarios} from './usuarios.model';
 
 @model()
@@ -17,8 +16,8 @@ export class Roles extends Entity {
   })
   nombre: string;
 
-  @hasMany(() => Usuarios, {through: {model: () => UsuarioRoles}})
-  usuarioRoles: Usuarios[];
+  @hasMany(() => Usuarios)
+  usuarios: Usuarios[];
 
   constructor(data?: Partial<Roles>) {
     super(data);
