@@ -47,15 +47,17 @@ export class UsuarioController {
     })
     usuarios: Omit<Usuarios, '_id'>,
   ): Promise<Usuarios> {
-    const password = this.passwordService.generateRandomPassword()
+    //let password = this.passwordService.generateRandomPassword()
+    //console.log(password)
     //Aquí se hace la notificación de la clave al usuario (password )
     const notiticacion = new NotificacionCorreo();
-    notiticacion.detinatario = usuarios.email;
+    notiticacion.email = usuarios.email;
     notiticacion.asunto = "Registro en el sistema";
-    notiticacion.mensaje = `Hola${usuarios.name}<br/>Su clave de acceso al sistama es ${password} y su usuario es ${usuarios.email}`;
+    notiticacion.mensaje = `${Configuraciones.saludo_notificaciones} ${usuarios.name}<br/>${Configuraciones.asunto_generacion_clave} ${usuarios.password} ${Configuraciones.asunto_definicion_usuario} ${usuarios.email}`;
     this.servicioNotificaciones.enviarCorreo(notiticacion);
-    const cryptingPassword = this.passwordService.cryptngText(password)
+    let cryptingPassword = this.passwordService.cryptngText(usuarios.password)
     usuarios.password = cryptingPassword
+    console.log(usuarios.password)
     return this.usuariosRepository.create(usuarios);
   }
 
@@ -163,14 +165,14 @@ export class UsuarioController {
 
   @post("/identificar-usuario", {
     responses: {
-      "200": {
-        description: "Identificación de usuario"
+      '200': {
+        description: "Identificación de usuarios"
       }
     }
   })
   async identificar(
     @requestBody() credenciales: Credenciales
-  ): Promise<Object> {
+  ): Promise<object> {
     const usuario = await this.servicioSesionUsuarios.ValidarCredenciales(credenciales);
     let token = "";
     if (usuario) {
@@ -183,7 +185,7 @@ export class UsuarioController {
     };
   }
 
-  @post("/recuperar-contraseña", {
+  @post("/recuperar-contrasenia", {
     responses: {
       "200": {
         description: "Recuperar contraseña de usuarios "
@@ -199,14 +201,14 @@ export class UsuarioController {
       }
     });
     if (usuario) {
-      const password = this.passwordService.generateRandomPassword()
-      const cryptedPassword = this.passwordService.cryptngText(password)
-      usuario.password = cryptedPassword
+      let password = this.passwordService.generateRandomPassword()
+      let cryptedPassword = this.passwordService.cryptngText(password)
+      usuario.password = this.passwordService.cryptngText(password)
       await this.usuariosRepository.updateById(usuario._id, usuario)
       //aqui we
       const notiticacion = new NotificacionesSms();
       notiticacion.destino = usuario.cell;
-      notiticacion.mensaje = `${Configuraciones.saludo_notificaciones}${usuario.name}${Configuraciones.mensaje_recuperacion_clave} ${password}`;
+      notiticacion.mensaje = `${Configuraciones.saludo_notificaciones} ${usuario.name} ${Configuraciones.mensaje_recuperacion_clave} ${password}`;
       this.servicioNotificaciones.enviarSms(notiticacion);
       return true
     }
@@ -230,7 +232,7 @@ export class UsuarioController {
         await this.usuariosRepository.updateById(data.id, usuario)
         //aqui we
         const notiticacion = new NotificacionCorreo();
-        notiticacion.detinatario = usuario.email;
+        notiticacion.email = usuario.email;
         notiticacion.asunto = Configuraciones.asunto_cambio_clave;
         notiticacion.mensaje = `${Configuraciones.saludo_notificaciones}${usuario.name}<br/>${Configuraciones.mensaje_cambio_clave}`;
         this.servicioNotificaciones.enviarCorreo(notiticacion);

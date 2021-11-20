@@ -12,7 +12,7 @@ export class NotificacionesService {
    */
 
   async enviarCorreo(notificacion: NotificacionCorreo): Promise<Boolean> {
-    const url = `${Configuraciones.url_notificaciones_email}?${Configuraciones.arg_hash_notificaciones}=${Configuraciones.hash_notificaciones}&${Configuraciones.arg_destino_correo_notificaciones}=${notificacion.detinatario}&${Configuraciones.arg_asunto_correo_notificaciones}${notificacion.asunto}&${Configuraciones.arg_mensaje_correo_notificaciones}=${notificacion.mensaje}`;
+    const url = `${Configuraciones.url_notificaciones_email}?${Configuraciones.arg_hash_notificaciones}=${Configuraciones.hash_notificaciones}&${Configuraciones.arg_destino_correo_notificaciones}=${notificacion.email}&${Configuraciones.arg_asunto_correo_notificaciones}=${notificacion.asunto}&${Configuraciones.arg_mensaje_correo_notificaciones}=${notificacion.mensaje}`;
     fetch(url)
       .then((data: any) => {
         return true;

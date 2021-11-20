@@ -16,7 +16,7 @@ export class AdminDePasswordsService {
   }
 
   cryptngText(text: string) {
-    const cryptedText = CryptoJS.MD5(text).toString
+    const cryptedText = CryptoJS.MD5(text).toString()
     return cryptedText
   }
 }

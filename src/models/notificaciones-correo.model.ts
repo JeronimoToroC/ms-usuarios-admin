@@ -6,7 +6,7 @@ export class NotificacionCorreo extends Model {
     type: 'string',
     required: true,
   })
-  detinatario: string;
+  email: string;
 
   @property({
     type: 'string',
@@ -19,11 +19,6 @@ export class NotificacionCorreo extends Model {
     required: true,
   })
   mensaje: string;
-
-  @property({
-    type: 'string',
-  })
-  adjunto?: string;
 
 
   constructor(data?: Partial<NotificacionCorreo>) {
