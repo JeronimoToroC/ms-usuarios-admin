@@ -7,3 +7,4 @@ export * from './roles.model';
 export * from './usuarios.model';
 
 
+export * from './foto-users.model';

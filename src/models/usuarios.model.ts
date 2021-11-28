@@ -1,4 +1,5 @@
-import {belongsTo, Entity, model, property} from '@loopback/repository';
+import {belongsTo, Entity, hasMany, model, property} from '@loopback/repository';
+import {FotoUsers} from './foto-users.model';
 import {Roles} from './roles.model';
 
 @model()
@@ -24,6 +25,12 @@ export class Usuarios extends Entity {
 
   @property({
     type: 'string',
+    required: true,
+  })
+  document: string;
+
+  @property({
+    type: 'string',
     required: false,
   })
   password: string;
@@ -42,6 +49,14 @@ export class Usuarios extends Entity {
 
   @belongsTo(() => Roles)
   rolesId: string;
+
+  @property({
+    type: 'string',
+  })
+  foto?: string;
+
+  @hasMany(() => FotoUsers, {keyTo: 'usuariosId'})
+  fotoUsers: FotoUsers[];
 
   constructor(data?: Partial<Usuarios>) {
     super(data);
