@@ -31,7 +31,6 @@ export class SesionUsuariosService {
     await fetch(url_crear_token)
       .then(async (res: any) => {
         token = await res.text();
-        console.log(token);
       })
     return token;
   }
