@@ -57,7 +57,6 @@ export class UsuarioController {
     this.servicioNotificaciones.enviarCorreo(notiticacion);
     let cryptingPassword = this.passwordService.cryptngText(password)
     usuarios.password = cryptingPassword
-    console.log(usuarios.password)
     return this.usuariosRepository.create(usuarios);
   }
 
