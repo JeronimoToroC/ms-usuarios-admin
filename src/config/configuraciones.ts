@@ -3,10 +3,12 @@ export namespace Configuraciones {
   export const url_notificaciones_sms = "http://localhost:5000/sms";
   export const hash_notificaciones = "1234";
   export const asunto_cambio_clave = "Cambio de clave";
+  export const asunto_generar_clave = "Creacion de clave";
   export const asunto_generacion_clave = "Su clave de acceso al sistama es";
   export const asunto_definicion_usuario = "y su usuario es";
   export const saludo_notificaciones = "Hola ";
   export const mensaje_cambio_clave = "Se ha modificado su clave en el sistema";
+  export const mensaje_generacion_clave = "Se ha generado su clave en el sistema y es ";
   export const arg_destino_correo_notificaciones = "email";
   export const arg_mensaje_correo_notificaciones = "mensaje";
   export const arg_asunto_correo_notificaciones = "asunto";
