@@ -18,4 +18,8 @@ export namespace Configuraciones {
   export const arg_nombre_token = "nombre";
   export const arg_id_persona_token = "id";
   export const arg_id_rol_token = "id_rol";
+  export const carpetaFoto = '../../archivos/proponentes';
+  export const nombreCampoFoto = 'file';
+  export const extensionesPermitidasIMG: string[] = ['.PNG', '.JPG', '.JPEG', '.SVG'];
+  export const tamMaxFoto = 1024 * 1024;
 }
