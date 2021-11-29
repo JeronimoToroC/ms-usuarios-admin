@@ -215,7 +215,7 @@ export class UsuarioController {
     return false;
   }
 
-  @post("/cambiar-contraseña", {
+  @post("/cambiar-contrasenia", {
     responses: {
       "200": {
         description: "Cambiar contraseña de usuarios "
