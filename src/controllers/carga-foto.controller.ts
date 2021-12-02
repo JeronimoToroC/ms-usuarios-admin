@@ -8,7 +8,6 @@ export class CargaFotoController {
 }
 // Uncomment these imports to begin using these cool features!
 
-// import {inject} from '@loopback/core';
 import {inject} from '@loopback/core';
 import {repository} from '@loopback/repository';
 import {
@@ -21,13 +20,13 @@ import {
 import multer from 'multer';
 import path from 'path';
 import {Configuraciones as llaves} from '../config/configuraciones';
-import {Usuarios} from '../models';
-import {UsuariosRepository} from '../repositories';
+import {FotoUsers} from '../models';
+import {FotoUsersRepository} from '../repositories';
 
 export class CargaFotoProponente {
   constructor(
-    @repository(UsuariosRepository)
-    private fotoRepository: UsuariosRepository
+    @repository(FotoUsersRepository)
+    private fotoRepository: FotoUsersRepository
   ) { }
 
 
@@ -37,7 +36,7 @@ export class CargaFotoProponente {
    * @param response
    * @param request
    */
-  @post('/CargarFotoProponente/{id_proponente}', {
+  @post('/CargarFotoProponente/{usuariosId}', {
     responses: {
       200: {
         content: {
@@ -54,14 +53,16 @@ export class CargaFotoProponente {
   async cargarFotoProponente(
     @inject(RestBindings.Http.RESPONSE) response: Response,
     @requestBody.file() request: Request,
-    @param.path.number("id_proponente") id: number
+    @param.path.number("usuariosId") id: string
   ): Promise<object | false> {
     const rutaDocumento = path.join(__dirname, llaves.carpetaFoto);
     const res = await this.StoreFileToPath(rutaDocumento, llaves.nombreCampoFoto, request, response, llaves.extensionesPermitidasIMG);
     if (res) {
       const nombre_foto = response.req?.file?.filename;
       if (nombre_foto) {
-        const foto = new Usuarios();
+        let foto = new FotoUsers();
+        foto.usuariosId = id;
+        foto.name = nombre_foto;
         await this.fotoRepository.save(foto);
         return {filename: nombre_foto};
       }
