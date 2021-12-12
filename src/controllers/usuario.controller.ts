@@ -48,8 +48,6 @@ export class UsuarioController {
     usuarios: Omit<Usuarios, '_id'>,
   ): Promise<Usuarios> {
     let password = this.passwordService.generateRandomPassword()
-    //console.log(password)
-    //Aquí se hace la notificación de la clave al usuario (password )
     const notiticacion = new NotificacionCorreo();
     notiticacion.email = usuarios.email;
     notiticacion.asunto = "Registro en el sistema";
